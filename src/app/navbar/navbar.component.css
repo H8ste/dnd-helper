@@ -1,0 +1,17 @@
+.navbarContainer{
+
+}
+
+
+.toggleNavbar{
+    /* min-height: ; */
+    background-color: #f2f2f2;
+    opacity: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.navbarIcon {
+    color: black;
+}

@@ -1,0 +1,234 @@
+<!-- <button (click)="switchScreen()">switchScreen</button> -->
+<div class="flex split_evenly marginWeb" *ngIf="PlayerCollection">
+    <div class="leftSide">
+        <div id="ColumnAbilityModifiers" class="flexZero ">
+            <div *ngFor="let abilityModifier of PlayerCollection.ability_scores | keyvalue">
+                <ability-modifier [ability]="abilityModifier">
+                </ability-modifier>
+            </div>
+
+        </div>
+
+        <div id="ColumnSavingThrowsAndSkills" class="flexOne ">
+            <div id="Proficiency">
+                <p>
+                    +{{PlayerCollection.level | levelAsProficiencybonus}} Proficiency Bonus
+                </p>
+
+            </div>
+            <div id="SavingThrows" (click)="toggleShownApproach(0)">
+                <p class="centerText">
+                    Saving Throws
+                </p>
+                <hr>
+                <div class="smallTextContainer">
+                    <i>
+                        * Proficiency bonus added
+                    </i>
+                </div>
+
+                <div *ngFor="let savingThrow of PlayerCollection.saving_throw | keyvalue" class="centerFlex">
+                    <span *ngIf="!savingthrowsShowCombined" class="centerText">
+                        {{(savingThrow.value * (PlayerCollection.level | levelAsProficiencybonus)) | plusIfNotNegative }}
+                        {{(PlayerCollection.ability_scores[savingThrow.key] | asModifier) | plusIfNotNegative}}
+                        {{savingThrow.key}}
+                    </span>
+                    <span *ngIf="savingthrowsShowCombined" class="centerText">
+                        {{(savingThrow.value * (PlayerCollection.level | levelAsProficiencybonus) + (PlayerCollection.ability_scores[savingThrow.key] | asModifier)) | plusIfNotNegative}}
+                        {{savingThrow.key}}
+                    </span>
+                </div>
+
+            </div>
+            <div id="Skills" (click)="toggleShownApproach(1)" class="">
+                <p class="centerText">
+                    Skills
+                </p>
+                <hr>
+                <div class="smallTextContainer">
+                    <i>
+                        * Proficiency bonus added
+                    </i>
+                </div>
+
+                <div *ngFor="let skill of PlayerCollection.skills" class="centerFlex">
+                    <span *ngIf="!skillsShowCombined" class="centerText">
+                        {{(skill.prof * (PlayerCollection.level | levelAsProficiencybonus) | plusIfNotNegative ) }}
+                        {{(PlayerCollection.ability_scores[skill.ability] | asModifier) | plusIfNotNegative}}
+                        {{skill.label}}
+                    </span>
+                    <span *ngIf="skillsShowCombined" class="centerText">
+                        {{ (skill.prof * (PlayerCollection.level | levelAsProficiencybonus)  + (PlayerCollection.ability_scores[skill.ability] | asModifier) ) | plusIfNotNegative}}
+                        {{skill.label}}
+                    </span>
+                </div>
+            </div>
+            <div id="PassiveWisdom">
+
+            </div>
+        </div>
+
+        <div id="CenterColumn" class="flexOne ">
+            <div id="CenterTopColumn">
+                <div class="CenterTopColumnContent">
+                    <div class="centerFlex">
+                        <span
+                            class="centerText">{{PlayerCollection.equipment.armor.ac + (PlayerCollection.ability_scores["dex"] | asModifier)}}
+                        </span>
+                    </div>
+                    <img class="fitImageToParentDiv" src="../../assets/ac.png" />
+                    <div class="centerFlex">AC</div>
+                </div>
+                <div class="CenterTopColumnContent">
+                    <div class="centerFlex">
+                        <span class="centerText">
+                            {{ (PlayerCollection.attributes.extraInitiative + (PlayerCollection.ability_scores["dex"] | asModifier)) | plusIfNotNegative}}
+                        </span>
+                    </div>
+                    <img class="fitImageToParentDiv" src="../../assets/initiative.png" />
+                    <div class="centerFlex">Initiative</div>
+                </div>
+                <div class="CenterTopColumnContent">
+                    <div class="centerFlex">
+                        <span class="centerText">
+                            {{ PlayerCollection.attributes.speed}}ft
+                        </span>
+                    </div>
+                    <img class="fitImageToParentDiv" src="../../assets/speed.png" />
+                    <div class="centerFlex">Speed</div>
+                </div>
+            </div>
+
+            <div id="CenterCenterColumn">
+                <div class="CenterCenterColumnContent">
+                    <!-- placeHolder -->
+                </div>
+                <div class="CenterCenterColumnContent">
+                    <div>
+                        <div class="centerFlex">
+                            <span class="centerText">Max Hitpoints</span>
+                        </div>
+                        <div class="centerFlex">
+                            <span class="centerText">{{PlayerCollection.status.max_hitpoints}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="imgAndTextContainer" (click)="heartClicked()">
+                        <img class="fitImageToParentDiv" src="../../assets/hitpoints.png" />
+                        <div class="textCenteredInFrontOfImage">
+                            {{PlayerCollection.status.current_hitpoints}}</div>
+                    </div>
+                    <div>
+                        <div class="centerFlex">
+                            <span class="centerText">{{PlayerCollection.status.temp_hitpoints}} </span>
+                        </div>
+                        <div class="centerFlex">
+                            <span class="centerText">Temp Hitpoints</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="CenterCenterColumnContent">
+                    <div>
+                        <div class="centerFlex">
+                            <span class="centerText">D{{PlayerCollection.attributes.hitpoints_dice}}</span>
+                        </div>
+                        <div class="centerFlex">
+                            <span class="centerText">Hit Dice</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="CenterBottomColumn">
+                <div id="SpellSlots" (click)="openSpellHelper()" class="">
+                    <div id="spellSlotTitleContainer">
+                        <div class="verticalCenter">
+                            Spell save DC =
+                            {{8 + (PlayerCollection.level | levelAsProficiencybonus) + (PlayerCollection.ability_scores.int | asModifier )}}
+                        </div>
+                        <span class="centerText">
+                            Spell Slots
+                        </span>
+                        <div class="verticalCenter">
+                            Spell Attack modifier =
+                            +{{(PlayerCollection.level | levelAsProficiencybonus) + (PlayerCollection.ability_scores.int | asModifier )}}
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="smallTextContainer">
+                        <span>
+                            Spells per day
+                        </span>
+                    </div>
+
+                    <div *ngFor="let spellLevel of getEnumaratorFromInt(9)">
+                        <div class="flex">
+                            {{spellLevel}}
+                            <div
+                                *ngFor="let spellSlot of getEnumaratorFromLevelAndSpellSlot(PlayerCollection.level, spellLevel)">
+                                <fa-icon
+                                    (click)="toggleSpellSlot(spellLevel, spellSlot, spellSlotsUsed[spellLevel] <= spellSlot)"
+                                    [icon]="spellSlotsUsed[spellLevel] <= spellSlot ? farCircle : fasCircle">
+                                </fa-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="RightColumn" class="flexFour">
+        <mat-tab-group>
+            <mat-tab label="Racial Features">
+                <div id="RacialFeatures">
+
+                    <ng-container
+                        *ngFor="let racialFeature of PlayerCollection.racial_features | keyvalue; let i = index">
+
+                        <div class="racialFeatureClass">
+                            <div>
+                                {{PlayerCollection.racial_features[racialFeature.key].label}}
+                            </div>
+                            <div [innerHTML]="PlayerCollection.racial_features[racialFeature.key].content">
+
+                            </div>
+                        </div>
+
+                        <div *ngIf="i == 2" class="breakColumn"></div>
+
+                    </ng-container>
+                </div>
+            </mat-tab>
+            <mat-tab label="Spell List">
+                <div id="SpellList">
+                    <mat-slide-toggle [(ngModel)]="onlyShowPrepared">Only Show Prepared Spells</mat-slide-toggle>
+                    <div *ngFor="let spellLevel of AvailableSpells; let i = index">
+                        <div *ngIf="(i <= PlayerCollection.level)">
+                            <div *ngFor="let spell of spellLevel">
+                                <spell *ngIf="!onlyShowPrepared || onlyShowPrepared && alreadyPrepared(spell)"
+                                    [spellInput]="spell" (spellSave)="saveSpell($event)"
+                                    (prepareSpell)="prepareSpell($event)" [alreadyPrepared]="alreadyPrepared(spell)">
+                                </spell>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Background And Notes">
+                <div id="BackgroundAndNotes">
+                    f
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+
+
+
+    </div>
+</div>

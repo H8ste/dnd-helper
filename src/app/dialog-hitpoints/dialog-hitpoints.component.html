@@ -1,0 +1,26 @@
+<h2> Change Hitpoints</h2>
+<mat-dialog-content>
+    Max Hitpoints:{{max_hitpoints}} <br>
+    Current Hitpoints:{{current_hitpoints}} <br>
+    Current Temp Hitpoints:{{temp_hitpoints}} <br>
+
+    <mat-slide-toggle [(ngModel)]="overrideTempHitpoints" (change)="calculateResultingHitpoints()">Override temporary
+        hitpoints</mat-slide-toggle>
+
+
+    <!-- <span matPrefix>+1 &nbsp;</span> -->
+    <input type="number" matInput placeholder="0" (input)="inputChanged($event.target.value)"> <br>
+
+
+
+
+    Resulting Max Hitpoints:{{result_max_hitpoints}} <br>
+    Resulting Hitpoints:{{result_current_hitpoints}} <br>
+    Resulting Temp Hitpoints:{{result_temp_hitpoints}} <br>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-dialog-close (click)="save()">Save</button>
+
+    <button mat-dialog-close (click)="close()">Cancel</button>
+</mat-dialog-actions>

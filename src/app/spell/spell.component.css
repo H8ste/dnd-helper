@@ -1,0 +1,19 @@
+.spell {
+    padding-bottom: 20px;
+    flex-basis: 88%;
+}
+
+#container{
+    display: flex;
+    flex-direction: row;
+    flex-basis: 100%;
+}
+
+.indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-basis: 10%;
+
+}

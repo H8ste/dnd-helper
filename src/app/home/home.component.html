@@ -1,0 +1,27 @@
+<!-- Navbar showing logged in user info and logoutbutton -->
+<div class="homeContainer">
+
+
+
+    <navbar [user]="user" (OnLogOut)="logout()"></navbar>
+
+
+    <!-- Content -->
+    <div id="content">
+        <character-sheet-screen *ngIf="screenID === 0" class="content" (OnSwitchScreen)="SwitchScreen($event)"
+            (spellSave)="saveSpell($event)" (PlayerCollectionSave)="savePlayerCollection($event)"
+            [PlayerCollection]="resultFromDatabase" [AvailableSpells]="AllSpells">
+        </character-sheet-screen>
+
+
+        <temp *ngIf="screenID === 1" (OnSwitchScreen)="SwitchScreen($event)">
+
+        </temp>
+    </div>
+
+
+</div>
+
+<ng-template #character_sheet>
+
+</ng-template>

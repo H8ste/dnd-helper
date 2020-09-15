@@ -1,0 +1,10 @@
+<div class="navbarContainer" *ngIf="showNavbar">
+    <p>{{user.name}}</p>
+    <button (click)="logout()">log out</button>
+
+</div>
+<div class="toggleNavbar" (click)="toggleNavbar()">
+    <span class="material-icons navbarIcon">
+        reorder
+    </span>
+</div>

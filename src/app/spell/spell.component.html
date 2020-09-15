@@ -1,0 +1,17 @@
+<div id="container">
+    <div class="indicator">
+        <fa-icon [icon]="selectedIcon" *ngIf="alreadyPrepared">
+        </fa-icon>
+    </div>
+    <div *ngIf="spellInput" class="spell" (click)="saveSpell(spellInput)" (dblclick)="doubleClick(spellInput)">
+        <span id="name">{{spellInput.name}} - {{spellInput.level}}</span> <br>
+        <span id="vsm">{{spellInput.components.raw}}</span> - <span id="duration">{{spellInput.duration}}</span> <br>
+        <span id="casting_time">{{spellInput.casting_time}}</span> - <span id="range">{{spellInput.range}}</span> <br>
+        <span>Ritual: </span><span id="ritual"> {{spellInput.ritual}} </span> - <span
+            id="school">{{spellInput.school}}</span> <br>
+        <span id="description">{{spellInput.description}}</span> <br>
+        {{spellInput.higher_levels}}
+
+
+    </div>
+</div>
