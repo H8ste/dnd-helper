@@ -19,6 +19,7 @@ import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import { DialogHitpointsComponent } from '../dialog-hitpoints/dialog-hitpoints.component';
 
 import { AsModifierPipe } from './../ability-modifier/ability-modifer.pipe'
+import { EventsService } from '../events.service';
 
 @Component({
   selector: 'character-sheet-screen',
@@ -30,7 +31,6 @@ import { AsModifierPipe } from './../ability-modifier/ability-modifer.pipe'
 export class CharacterSheetScreenComponent implements OnInit {
   Console = console;
 
-  @Input() PlayerCollection: interfaces.PlayerCollection;
   @Input() AvailableSpells: interfaces.Spell[]
   @Input() SpellsPrepared: string[]
   // @Input() PlayerSpellSlots
@@ -48,15 +48,17 @@ export class CharacterSheetScreenComponent implements OnInit {
 
   onlyShowPrepared = false;
 
-  spellSlotsUsed = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 
   constructor(
     private router: Router,
     breakpointObserver: BreakpointObserver,
     private db: AngularFirestore,
     public hitpointsDialog: MatDialog,
-    private asModifierPipe: AsModifierPipe) {
+    private asModifierPipe: AsModifierPipe,
+    public events: EventsService) {
     this.wizardTable = table.table;
+
   }
 
   toggleShownApproach(i: number) {
@@ -66,7 +68,7 @@ export class CharacterSheetScreenComponent implements OnInit {
   }
 
   getAbilityScoresIterator() {
-    return this.PlayerCollection ? Object.values(this.PlayerCollection.ability_scores) : null
+    return this.events.PlayerCollection ? Object.values(this.events.PlayerCollection.ability_scores) : null
   }
 
   updateMyLayoutForScreenSizeChange(result): void {
@@ -112,11 +114,20 @@ export class CharacterSheetScreenComponent implements OnInit {
 
   toggleSpellSlot(spellLevel: number, spellSlot: number, wasNotFilled: boolean) {
     if (wasNotFilled) {
-      this.spellSlotsUsed[spellLevel]++;
+      this.events.spellSlotsUsed[spellLevel]++;
     } else {
-      this.spellSlotsUsed[spellLevel]--;
+      this.events.spellSlotsUsed[spellLevel]--;
     }
     console.debug(spellLevel + " " + spellSlot + " " + wasNotFilled)
+  }
+
+  toggleScholarLevel(wasNotFilled: boolean) {
+    if (wasNotFilled) {
+      this.events.scholarPointsUsed++;
+    } else {
+      this.events.scholarPointsUsed--;
+    }
+    // console.debug(spellLevel + " " + spellSlot + " " + wasNotFilled)
   }
 
   saveSpell(spellToSave: interfaces.Spell) {
@@ -126,21 +137,21 @@ export class CharacterSheetScreenComponent implements OnInit {
   heartClicked() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
-      current_hitpoints: this.PlayerCollection.status.current_hitpoints,
-      max_hitpoints: this.PlayerCollection.status.max_hitpoints,
-      temp_hitpoints: this.PlayerCollection.status.temp_hitpoints,
+      current_hitpoints: this.events.PlayerCollection.status.current_hitpoints,
+      max_hitpoints: this.events.PlayerCollection.status.max_hitpoints,
+      temp_hitpoints: this.events.PlayerCollection.status.temp_hitpoints,
     }
     let dialogRef = this.hitpointsDialog.open(DialogHitpointsComponent, dialogConfig);
     dialogRef.afterClosed().subscribe((newHitpoints) => {
       console.debug(newHitpoints);
       if (newHitpoints) {
         console.debug(newHitpoints);
-        this.PlayerCollection.status.current_hitpoints = newHitpoints.current_hitpoints;
-        this.PlayerCollection.status.max_hitpoints = newHitpoints.max_hitpoints;
-        this.PlayerCollection.status.temp_hitpoints = newHitpoints.temp_hitpoints;
+        this.events.PlayerCollection.status.current_hitpoints = newHitpoints.current_hitpoints;
+        this.events.PlayerCollection.status.max_hitpoints = newHitpoints.max_hitpoints;
+        this.events.PlayerCollection.status.temp_hitpoints = newHitpoints.temp_hitpoints;
 
         //save
-        this.PlayerCollectionSave.emit({ player: this.PlayerCollection, keyOfField: ["status"] })
+        this.PlayerCollectionSave.emit({ player: this.events.PlayerCollection, keyOfField: ["status"] })
 
 
       }
@@ -153,19 +164,19 @@ export class CharacterSheetScreenComponent implements OnInit {
       //check if player already has too many spells prepared
 
       //check if player doesn't already has this spell prepared
-      if (this.PlayerCollection.spells_prepared.some((spellPreparedName) => {
+      if (this.events.PlayerCollection.spells_prepared.some((spellPreparedName) => {
         return spellPreparedName === spell.name
       })) {
-        for (var i = 0; i < this.PlayerCollection.spells_prepared.length; i++) {
-          if (this.PlayerCollection.spells_prepared[i] === spell.name) {
-            this.PlayerCollection.spells_prepared.splice(i, 1);
+        for (var i = 0; i < this.events.PlayerCollection.spells_prepared.length; i++) {
+          if (this.events.PlayerCollection.spells_prepared[i] === spell.name) {
+            this.events.PlayerCollection.spells_prepared.splice(i, 1);
           }
         }
         console.debug("already has this spell prepared - unpreparing it")
 
       } else {
         if (this.canPrepare()) {
-          this.PlayerCollection.spells_prepared.push(spell.name);
+          this.events.PlayerCollection.spells_prepared.push(spell.name);
           console.debug("preparing spell")
         }
         else {
@@ -173,19 +184,31 @@ export class CharacterSheetScreenComponent implements OnInit {
         }
       }
 
-      this.PlayerCollectionSave.emit({ player: this.PlayerCollection, keyOfField: ["spells_prepared"] })
+      this.PlayerCollectionSave.emit({ player: this.events.PlayerCollection, keyOfField: ["spells_prepared"] })
 
     }
 
   }
 
   alreadyPrepared(spell: interfaces.Spell) {
-    return this.PlayerCollection.spells_prepared.some((spellPreparedName) => {
+    if (spell.level === 'cantrip') {
+      return true;
+    }
+    return this.events.PlayerCollection.spells_prepared.some((spellPreparedName) => {
       return spellPreparedName === spell.name
     });
   }
 
   canPrepare() {
-    return this.PlayerCollection.spells_prepared.length < this.PlayerCollection.level + this.asModifierPipe.transform(this.PlayerCollection.ability_scores.int)
+    return this.events.PlayerCollection.spells_prepared.length < this.events.PlayerCollection.level + this.asModifierPipe.transform(this.events.PlayerCollection.ability_scores.int)
+  }
+
+  nonCantripSpellsPrepared() {
+    var counter = 0;
+
+    return counter;
+  }
+  Ceil(input: number) {
+    return Math.ceil(input)
   }
 }

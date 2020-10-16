@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "dnd-helper-3370c"
+  },
+  "targets": {
+    "dnd-helper-3370c": {
+      "hosting": {
+        "dnd-helper": [
+          "dnd-helper-3370c"
+        ]
+      }
+    }
+  }
+}

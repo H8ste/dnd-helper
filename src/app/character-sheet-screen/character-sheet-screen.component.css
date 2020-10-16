@@ -189,7 +189,7 @@ img.fitImageToParentDiv{
     /* margin: 20px;
     min-width: 30%; */
     padding: 15px;
-    flex-basis: 25%;
+    flex-basis: 35vw;
 }
 
 .breakColumn {
@@ -200,6 +200,8 @@ img.fitImageToParentDiv{
 #RacialFeatures{
     display: flex;
     flex-wrap: wrap;
+    overflow-y: scroll;
+    max-height: 90vh;
 }
 
 .flexGrow{
@@ -207,9 +209,9 @@ img.fitImageToParentDiv{
 }
 
 #SpellList {
-    overflow: visible !important;
+    overflow-y: scroll !important;
     padding: 10px;
-    max-height: 90vh;;
+    max-height: 80vh;
 }
 
 #spellSlotTitleContainer{
@@ -235,4 +237,35 @@ img.fitImageToParentDiv{
 .marginWeb{
 
     margin: 0px 50px 50px 50px;
+}
+
+.spellSlotIndicator{
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+}
+
+.topandbottomPadding{
+    padding: 0.2rem;
+}
+.spellListHeader{
+    display: flex;
+    justify-content: space-evenly;
+    position: sticky;  
+    top: 0;
+    margin: 10px 0 10px 0;
+}
+
+.flex .left {
+    align-self: flex-start;
+    flex: 1;
+}
+.flex .right {
+    align-self: flex-start;
+    flex: 1;
+}
+
+.column{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }

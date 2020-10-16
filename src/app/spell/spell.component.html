@@ -3,7 +3,8 @@
         <fa-icon [icon]="selectedIcon" *ngIf="alreadyPrepared">
         </fa-icon>
     </div>
-    <div *ngIf="spellInput" class="spell" (click)="saveSpell(spellInput)" (dblclick)="doubleClick(spellInput)">
+    <div *ngIf="spellInput" class="spell" (click)="saveSpell(spellInput)"
+        (dblclick)="spellInput.level !== 'cantrip' ? doubleClick(spellInput) : saveSpell(spellInput)">
         <span id="name">{{spellInput.name}} - {{spellInput.level}}</span> <br>
         <span id="vsm">{{spellInput.components.raw}}</span> - <span id="duration">{{spellInput.duration}}</span> <br>
         <span id="casting_time">{{spellInput.casting_time}}</span> - <span id="range">{{spellInput.range}}</span> <br>

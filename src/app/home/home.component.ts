@@ -17,6 +17,7 @@ import * as interfaces from './player_collection'
 import * as table from './../character-sheet-screen/spell-table'
 
 import { SaveConfig } from './save_config'
+import { EventsService } from '../events.service';
 
 @Component({
   selector: 'page-home',
@@ -30,7 +31,7 @@ export class HomeComponent implements OnInit {
 
   screenID = 0;
 
-  resultFromDatabase: interfaces.PlayerCollection;
+
 
   private AllSpells: Array<Array<interfaces.Spell>>;
 
@@ -44,7 +45,8 @@ export class HomeComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private fb: FormBuilder,
-    private db: AngularFirestore
+    private db: AngularFirestore,
+    private events: EventsService
   ) {
     console.debug("home constructor called")
 
@@ -92,9 +94,10 @@ export class HomeComponent implements OnInit {
         responseFromDatabase.subscribe((result: interfaces.PlayerCollection) => {
           if (result) {
             //player was found
-            this.resultFromDatabase = result;
+            this.events.PlayerCollection = result;
+            // this.resultFromDatabase = result;
             console.debug("recieved results:")
-            console.debug(this.resultFromDatabase);
+            console.debug(this.events.PlayerCollection);
 
             this.AllSpells = new Array<Array<interfaces.Spell>>();
             for (let index = 0; index <= 9; index++) {
@@ -293,6 +296,14 @@ export class HomeComponent implements OnInit {
   async getDocument(docId: string) {
     let document = await this.db.collection("player_collection").doc(docId).get().toPromise();
     return document.data();
+  }
+
+  longRest() {
+
+  }
+
+  shortRest() {
+
   }
 
 }

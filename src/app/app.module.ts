@@ -36,7 +36,6 @@ import { AbilityModifierComponent } from './ability-modifier/ability-modifier.co
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SpellComponent } from './spell/spell.component';
 import { DialogHitpointsComponent } from './dialog-hitpoints/dialog-hitpoints.component';
-import { TempComponent } from './temp/temp.component';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
@@ -70,7 +69,6 @@ var firebaseConfig = {
     UserComponent,
     HomeComponent,
     NavbarComponent,
-    TempComponent,
     AbilityModifierComponent,
     AsModifierPipe,
     LevelAsProficiencybonus,

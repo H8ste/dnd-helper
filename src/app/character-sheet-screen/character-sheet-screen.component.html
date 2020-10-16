@@ -1,8 +1,8 @@
 <!-- <button (click)="switchScreen()">switchScreen</button> -->
-<div class="flex split_evenly marginWeb" *ngIf="PlayerCollection">
+<div class="flex split_evenly marginWeb" *ngIf="events.PlayerCollection">
     <div class="leftSide">
         <div id="ColumnAbilityModifiers" class="flexZero ">
-            <div *ngFor="let abilityModifier of PlayerCollection.ability_scores | keyvalue">
+            <div *ngFor="let abilityModifier of events.PlayerCollection.ability_scores | keyvalue">
                 <ability-modifier [ability]="abilityModifier">
                 </ability-modifier>
             </div>
@@ -12,7 +12,7 @@
         <div id="ColumnSavingThrowsAndSkills" class="flexOne ">
             <div id="Proficiency">
                 <p>
-                    +{{PlayerCollection.level | levelAsProficiencybonus}} Proficiency Bonus
+                    +{{events.PlayerCollection.level | levelAsProficiencybonus}} Proficiency Bonus
                 </p>
 
             </div>
@@ -27,14 +27,14 @@
                     </i>
                 </div>
 
-                <div *ngFor="let savingThrow of PlayerCollection.saving_throw | keyvalue" class="centerFlex">
+                <div *ngFor="let savingThrow of events.PlayerCollection.saving_throw | keyvalue" class="centerFlex">
                     <span *ngIf="!savingthrowsShowCombined" class="centerText">
-                        {{(savingThrow.value * (PlayerCollection.level | levelAsProficiencybonus)) | plusIfNotNegative }}
-                        {{(PlayerCollection.ability_scores[savingThrow.key] | asModifier) | plusIfNotNegative}}
+                        {{(savingThrow.value * (events.PlayerCollection.level | levelAsProficiencybonus)) | plusIfNotNegative }}
+                        {{(events.PlayerCollection.ability_scores[savingThrow.key] | asModifier) | plusIfNotNegative}}
                         {{savingThrow.key}}
                     </span>
                     <span *ngIf="savingthrowsShowCombined" class="centerText">
-                        {{(savingThrow.value * (PlayerCollection.level | levelAsProficiencybonus) + (PlayerCollection.ability_scores[savingThrow.key] | asModifier)) | plusIfNotNegative}}
+                        {{(savingThrow.value * (events.PlayerCollection.level | levelAsProficiencybonus) + (events.PlayerCollection.ability_scores[savingThrow.key] | asModifier)) | plusIfNotNegative}}
                         {{savingThrow.key}}
                     </span>
                 </div>
@@ -51,14 +51,14 @@
                     </i>
                 </div>
 
-                <div *ngFor="let skill of PlayerCollection.skills" class="centerFlex">
+                <div *ngFor="let skill of events.PlayerCollection.skills" class="centerFlex">
                     <span *ngIf="!skillsShowCombined" class="centerText">
-                        {{(skill.prof * (PlayerCollection.level | levelAsProficiencybonus) | plusIfNotNegative ) }}
-                        {{(PlayerCollection.ability_scores[skill.ability] | asModifier) | plusIfNotNegative}}
+                        {{(skill.prof * (events.PlayerCollection.level | levelAsProficiencybonus) | plusIfNotNegative ) }}
+                        {{(events.PlayerCollection.ability_scores[skill.ability] | asModifier) | plusIfNotNegative}}
                         {{skill.label}}
                     </span>
                     <span *ngIf="skillsShowCombined" class="centerText">
-                        {{ (skill.prof * (PlayerCollection.level | levelAsProficiencybonus)  + (PlayerCollection.ability_scores[skill.ability] | asModifier) ) | plusIfNotNegative}}
+                        {{ (skill.prof * (events.PlayerCollection.level | levelAsProficiencybonus)  + (events.PlayerCollection.ability_scores[skill.ability] | asModifier) ) | plusIfNotNegative}}
                         {{skill.label}}
                     </span>
                 </div>
@@ -73,7 +73,7 @@
                 <div class="CenterTopColumnContent">
                     <div class="centerFlex">
                         <span
-                            class="centerText">{{PlayerCollection.equipment.armor.ac + (PlayerCollection.ability_scores["dex"] | asModifier)}}
+                            class="centerText">{{events.PlayerCollection.equipment.armor.ac + (events.PlayerCollection.ability_scores["dex"] | asModifier)}}
                         </span>
                     </div>
                     <img class="fitImageToParentDiv" src="../../assets/ac.png" />
@@ -82,7 +82,7 @@
                 <div class="CenterTopColumnContent">
                     <div class="centerFlex">
                         <span class="centerText">
-                            {{ (PlayerCollection.attributes.extraInitiative + (PlayerCollection.ability_scores["dex"] | asModifier)) | plusIfNotNegative}}
+                            {{ (events.PlayerCollection.attributes.extraInitiative + (events.PlayerCollection.ability_scores["dex"] | asModifier)) | plusIfNotNegative}}
                         </span>
                     </div>
                     <img class="fitImageToParentDiv" src="../../assets/initiative.png" />
@@ -91,7 +91,7 @@
                 <div class="CenterTopColumnContent">
                     <div class="centerFlex">
                         <span class="centerText">
-                            {{ PlayerCollection.attributes.speed}}ft
+                            {{ events.PlayerCollection.attributes.speed}}ft
                         </span>
                     </div>
                     <img class="fitImageToParentDiv" src="../../assets/speed.png" />
@@ -109,18 +109,18 @@
                             <span class="centerText">Max Hitpoints</span>
                         </div>
                         <div class="centerFlex">
-                            <span class="centerText">{{PlayerCollection.status.max_hitpoints}}
+                            <span class="centerText">{{events.PlayerCollection.status.max_hitpoints}}
                             </span>
                         </div>
                     </div>
                     <div class="imgAndTextContainer" (click)="heartClicked()">
                         <img class="fitImageToParentDiv" src="../../assets/hitpoints.png" />
                         <div class="textCenteredInFrontOfImage">
-                            {{PlayerCollection.status.current_hitpoints}}</div>
+                            {{events.PlayerCollection.status.current_hitpoints}}</div>
                     </div>
                     <div>
                         <div class="centerFlex">
-                            <span class="centerText">{{PlayerCollection.status.temp_hitpoints}} </span>
+                            <span class="centerText">{{events.PlayerCollection.status.temp_hitpoints}} </span>
                         </div>
                         <div class="centerFlex">
                             <span class="centerText">Temp Hitpoints</span>
@@ -131,7 +131,7 @@
                 <div class="CenterCenterColumnContent">
                     <div>
                         <div class="centerFlex">
-                            <span class="centerText">D{{PlayerCollection.attributes.hitpoints_dice}}</span>
+                            <span class="centerText">D{{events.PlayerCollection.attributes.hitpoints_dice}}</span>
                         </div>
                         <div class="centerFlex">
                             <span class="centerText">Hit Dice</span>
@@ -145,36 +145,58 @@
                     <div id="spellSlotTitleContainer">
                         <div class="verticalCenter">
                             Spell save DC =
-                            {{8 + (PlayerCollection.level | levelAsProficiencybonus) + (PlayerCollection.ability_scores.int | asModifier )}}
+                            {{8 + (events.PlayerCollection.level | levelAsProficiencybonus) + (events.PlayerCollection.ability_scores.int | asModifier )}}
                         </div>
                         <span class="centerText">
                             Spell Slots
                         </span>
                         <div class="verticalCenter">
                             Spell Attack modifier =
-                            +{{(PlayerCollection.level | levelAsProficiencybonus) + (PlayerCollection.ability_scores.int | asModifier )}}
+                            +{{(events.PlayerCollection.level | levelAsProficiencybonus) + (events.PlayerCollection.ability_scores.int | asModifier )}}
                         </div>
                     </div>
 
                     <hr>
-                    <div class="smallTextContainer">
-                        <span>
-                            Spells per day
-                        </span>
-                    </div>
+                    <div class="flex">
+                        <div class="left">
+                            <div class="smallTextContainer">
+                                <span>
+                                    Spells per day
+                                </span>
+                            </div>
 
-                    <div *ngFor="let spellLevel of getEnumaratorFromInt(9)">
-                        <div class="flex">
-                            {{spellLevel}}
-                            <div
-                                *ngFor="let spellSlot of getEnumaratorFromLevelAndSpellSlot(PlayerCollection.level, spellLevel)">
-                                <fa-icon
-                                    (click)="toggleSpellSlot(spellLevel, spellSlot, spellSlotsUsed[spellLevel] <= spellSlot)"
-                                    [icon]="spellSlotsUsed[spellLevel] <= spellSlot ? farCircle : fasCircle">
-                                </fa-icon>
+                            <div *ngFor="let spellLevel of getEnumaratorFromInt(9)" class="topandbottomPadding">
+                                <div class="flex">
+                                    {{spellLevel}}
+                                    <div class="spellSlotIndicator"
+                                        *ngFor="let spellSlot of getEnumaratorFromLevelAndSpellSlot(events.PlayerCollection.level, spellLevel)">
+                                        <fa-icon
+                                            (click)="toggleSpellSlot(spellLevel, spellSlot, events.spellSlotsUsed[spellLevel] <= spellSlot)"
+                                            [icon]="events.spellSlotsUsed[spellLevel] <= spellSlot ? farCircle : fasCircle">
+                                        </fa-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="smallTextContainer">
+                                <span>
+                                    Scholar points per day
+                                </span>
+                            </div>
+                            <div class="column">
+                                {{Ceil(this.events.PlayerCollection.level / 2)}}
+                                <div
+                                    *ngFor="let scholarPoint of getEnumaratorFromInt(Ceil(this.events.PlayerCollection.level / 2))">
+                                    <fa-icon (click)="toggleScholarLevel(events.scholarPointsUsed <= scholarPoint)"
+                                        [icon]="events.scholarPointsUsed <= scholarPoint ? farCircle : fasCircle">
+                                    </fa-icon>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
 
                 </div>
             </div>
@@ -188,13 +210,13 @@
                 <div id="RacialFeatures">
 
                     <ng-container
-                        *ngFor="let racialFeature of PlayerCollection.racial_features | keyvalue; let i = index">
+                        *ngFor="let racialFeature of events.PlayerCollection.racial_features | keyvalue; let i = index">
 
                         <div class="racialFeatureClass">
                             <div>
-                                {{PlayerCollection.racial_features[racialFeature.key].label}}
+                                <b>{{events.PlayerCollection.racial_features[racialFeature.key].label}}</b>
                             </div>
-                            <div [innerHTML]="PlayerCollection.racial_features[racialFeature.key].content">
+                            <div [innerHTML]="events.PlayerCollection.racial_features[racialFeature.key].content">
 
                             </div>
                         </div>
@@ -205,20 +227,28 @@
                 </div>
             </mat-tab>
             <mat-tab label="Spell List">
-                <div id="SpellList">
-                    <mat-slide-toggle [(ngModel)]="onlyShowPrepared">Only Show Prepared Spells</mat-slide-toggle>
-                    <div *ngFor="let spellLevel of AvailableSpells; let i = index">
-                        <div *ngIf="(i <= PlayerCollection.level)">
-                            <div *ngFor="let spell of spellLevel">
-                                <spell *ngIf="!onlyShowPrepared || onlyShowPrepared && alreadyPrepared(spell)"
-                                    [spellInput]="spell" (spellSave)="saveSpell($event)"
-                                    (prepareSpell)="prepareSpell($event)" [alreadyPrepared]="alreadyPrepared(spell)">
-                                </spell>
+                <div>
+                    <div class="spellListHeader">
+                        <mat-slide-toggle [(ngModel)]="onlyShowPrepared">Only Show Prepared Spells</mat-slide-toggle>
+                        <span>{{events.PlayerCollection.spells_prepared.length}} /
+                            {{events.PlayerCollection.level + (events.PlayerCollection.ability_scores.int | asModifier)}}</span>
+                    </div>
+                    <div id="SpellList">
+                        <div *ngFor="let spellLevel of AvailableSpells; let i = index">
+                            <div *ngIf="(i <= events.PlayerCollection.level)">
+                                <div *ngFor="let spell of spellLevel">
+                                    <spell *ngIf="!onlyShowPrepared || onlyShowPrepared && alreadyPrepared(spell)"
+                                        [spellInput]="spell" (spellSave)="saveSpell($event)"
+                                        (prepareSpell)="prepareSpell($event)"
+                                        [alreadyPrepared]="alreadyPrepared(spell)">
+                                    </spell>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
+
             </mat-tab>
             <mat-tab label="Background And Notes">
                 <div id="BackgroundAndNotes">

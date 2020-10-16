@@ -10,13 +10,8 @@
     <div id="content">
         <character-sheet-screen *ngIf="screenID === 0" class="content" (OnSwitchScreen)="SwitchScreen($event)"
             (spellSave)="saveSpell($event)" (PlayerCollectionSave)="savePlayerCollection($event)"
-            [PlayerCollection]="resultFromDatabase" [AvailableSpells]="AllSpells">
+            [AvailableSpells]="AllSpells">
         </character-sheet-screen>
-
-
-        <temp *ngIf="screenID === 1" (OnSwitchScreen)="SwitchScreen($event)">
-
-        </temp>
     </div>
 
 
