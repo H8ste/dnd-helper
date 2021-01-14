@@ -35,7 +35,7 @@ export class CharacterSheetScreenComponent implements OnInit {
   @Input() SpellsPrepared: string[]
   // @Input() PlayerSpellSlots
   @Output() OnSwitchScreen = new EventEmitter<number>();
-  @Output() spellSave = new EventEmitter<interfaces.Spell>();
+  @Output() spellSave = new EventEmitter<{spell:interfaces.Spell, playerCollection: string}>();
   @Output() PlayerCollectionSave = new EventEmitter<SaveConfig>();
 
 
@@ -131,7 +131,7 @@ export class CharacterSheetScreenComponent implements OnInit {
   }
 
   saveSpell(spellToSave: interfaces.Spell) {
-    this.spellSave.emit(spellToSave);
+    this.spellSave.emit({spell: spellToSave, playerCollection: this.events.PlayerCollection.collection});
   }
 
   heartClicked() {
@@ -163,28 +163,36 @@ export class CharacterSheetScreenComponent implements OnInit {
     if (spell) {
       //check if player already has too many spells prepared
 
-      //check if player doesn't already has this spell prepared
-      if (this.events.PlayerCollection.spells_prepared.some((spellPreparedName) => {
-        return spellPreparedName === spell.name
-      })) {
-        for (var i = 0; i < this.events.PlayerCollection.spells_prepared.length; i++) {
-          if (this.events.PlayerCollection.spells_prepared[i] === spell.name) {
-            this.events.PlayerCollection.spells_prepared.splice(i, 1);
+
+      if (this.events.PlayerCollection.spells_always_prepared.some((alwaysPreparedSpellName) => {
+        return alwaysPreparedSpellName === spell.name
+      })){
+        
+      } else {
+        //check if player doesn't already has this spell prepared
+        if (this.events.PlayerCollection.spells_prepared.some((spellPreparedName) => {
+          return spellPreparedName === spell.name
+        })) {
+          for (var i = 0; i < this.events.PlayerCollection.spells_prepared.length; i++) {
+            if (this.events.PlayerCollection.spells_prepared[i] === spell.name) {
+              this.events.PlayerCollection.spells_prepared.splice(i, 1);
+            }
+          }
+          console.debug("already has this spell prepared - unpreparing it")
+
+        } else {
+          if (this.canPrepare()) {
+            this.events.PlayerCollection.spells_prepared.push(spell.name);
+            console.debug("preparing spell")
+          }
+          else {
+            console.debug("can't prepare any more spells")
           }
         }
-        console.debug("already has this spell prepared - unpreparing it")
 
-      } else {
-        if (this.canPrepare()) {
-          this.events.PlayerCollection.spells_prepared.push(spell.name);
-          console.debug("preparing spell")
-        }
-        else {
-          console.debug("can't prepare any more spells")
-        }
+        this.PlayerCollectionSave.emit({ player: this.events.PlayerCollection, keyOfField: ["spells_prepared"] })
       }
-
-      this.PlayerCollectionSave.emit({ player: this.events.PlayerCollection, keyOfField: ["spells_prepared"] })
+      
 
     }
 
@@ -194,9 +202,15 @@ export class CharacterSheetScreenComponent implements OnInit {
     if (spell.level === 'cantrip') {
       return true;
     }
-    return this.events.PlayerCollection.spells_prepared.some((spellPreparedName) => {
+    var spells_prepared = this.events.PlayerCollection.spells_prepared.some((spellPreparedName) => {
       return spellPreparedName === spell.name
     });
+
+    var always_prepared = this.events.PlayerCollection.spells_always_prepared.some((spellPreparedName) => {
+      return spellPreparedName === spell.name
+    })
+
+    return always_prepared || spells_prepared;
   }
 
   canPrepare() {

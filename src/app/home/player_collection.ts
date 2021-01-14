@@ -8,7 +8,10 @@ interface Player_Collection {
     status: Status,
     racial_features: RacialFeatures,
     spellbook: SpellBook,
-    spells_prepared: string[]
+    spells_prepared: string[],
+    spells_always_prepared: string[],
+    name: string,
+    collection: string,
 }
 
 interface Ability_Scores {

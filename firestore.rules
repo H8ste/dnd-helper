@@ -7,8 +7,12 @@ service cloud.firestore {
         allow update, delete: if request.auth != null && request.auth.uid == userId;
         allow read, create: if request.auth != null;
     	}
-
-
+    }
+    	match /player_collection/{userId}/character_collection {
+      	match /{document=**} {
+            allow update, delete: if request.auth != null && request.auth.uid == userId;
+            allow read, create: if request.auth != null;
+      }
     }
   }
 }

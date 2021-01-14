@@ -1,0 +1,12 @@
+<div class="centerContainer">
+    <div *ngFor="let playableCharacter of events.AvailableCharacters">
+        <button mat-button class="outerContainer" (click)="playCharacter(playableCharacter)">
+            <div class="header">
+                {{playableCharacter.name}}
+            </div>
+            <div class="content">
+                Level: {{playableCharacter.level}}
+            </div>
+        </button>
+    </div>
+</div>

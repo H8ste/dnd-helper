@@ -17,6 +17,8 @@ export class EventsService {
 
   PlayerCollection: interfaces.PlayerCollection;
 
+  AvailableCharacters: interfaces.PlayerCollection[];
+
   shortRest() {
     // this.scholarPointsUsed = 0;
 

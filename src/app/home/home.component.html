@@ -1,20 +1,17 @@
 <!-- Navbar showing logged in user info and logoutbutton -->
 <div class="homeContainer">
-
-
-
     <navbar [user]="user" (OnLogOut)="logout()"></navbar>
-
 
     <!-- Content -->
     <div id="content">
-        <character-sheet-screen *ngIf="screenID === 0" class="content" (OnSwitchScreen)="SwitchScreen($event)"
+        <character-selector-screen *ngIf="screenID === 0" class="content" (OnPlayerChosen)="characterHasBeenChosen()">
+
+        </character-selector-screen>
+        <character-sheet-screen *ngIf="screenID === 1" class="content" (OnSwitchScreen)="SwitchScreen($event)"
             (spellSave)="saveSpell($event)" (PlayerCollectionSave)="savePlayerCollection($event)"
             [AvailableSpells]="AllSpells">
         </character-sheet-screen>
     </div>
-
-
 </div>
 
 <ng-template #character_sheet>

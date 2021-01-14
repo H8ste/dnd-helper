@@ -10877,5 +10877,34 @@
             "level3"
         ],
         "type": "3rd-level evocation"
+    },
+    {
+        "casting_time": "1 action",
+        "classes": [
+            "wizard",
+            "sorcerer"
+        ],
+        "components": {
+            "material": true,
+            "materials_needed": [
+                "a drop of water"
+            ],
+            "raw": "V, S, M (a drop of water)",
+            "somatic": true,
+            "verbal": true
+        },
+        "description": "You create ten tiny ice shards on your space. They float in the air and orbit you for the spell's duration. When you cast the spell - and as a bonus action on each of your turns thereafter - you can expend on of the shards, sending it violently towards a creature of your choice within 30 feet of you. You make a ranged spell attack roll against the target creature. On a hit, the create takes 1d4 piercing damage and 1d8 cold damage",
+        "higher_levels": "When you cast this spell using a spell slot of 2nd level or higher, the cold damage increases by 1d8 for each two slots levels above 1st.",
+        "duration": "Concentration, up to 1 minute",
+        "level": "1",
+        "name": "Ice Shards",
+        "range": "Self",
+        "ritual": false,
+        "school": "evocation",
+        "tags": [
+            "wizard",
+            "level1"
+        ],
+        "type": "1st-level evocation"
     }
 ]

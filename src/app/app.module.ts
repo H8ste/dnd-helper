@@ -16,7 +16,6 @@ import { UserService } from './core/user.service';
 import { UserResolver } from './user/user.resolver';
 import { AuthGuard } from './core/authentication.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Location } from '@angular/common';
 import { HomeResolver } from './home/home.resolver';
 
 
@@ -39,12 +38,14 @@ import { DialogHitpointsComponent } from './dialog-hitpoints/dialog-hitpoints.co
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
+import { MatButtonModule } from '@angular/material/button'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
-import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { CharacterSelectorScreenComponent } from './character-selector-screen/character-selector-screen.component'
 
 
 var firebaseConfig = {
@@ -75,6 +76,7 @@ var firebaseConfig = {
     PlusIfNotNegative,
     SpellComponent,
     DialogHitpointsComponent,
+    CharacterSelectorScreenComponent,
   ],
   entryComponents: [DialogHitpointsComponent],
   imports: [
@@ -93,6 +95,7 @@ var firebaseConfig = {
     MatDialogModule,
     MatFormFieldModule,
     MatButtonToggleModule,
+    MatButtonModule,
     MatSlideToggleModule,
   ],
   providers: [AuthenticationService, UserService, UserResolver, HomeResolver, AuthGuard, AsModifierPipe],

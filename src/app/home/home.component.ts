@@ -6,18 +6,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FirebaseUserModel } from '../core/user.model';
 import { AuthenticationService } from '../core/authentication.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-
-import { Observable } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
-
-import spells from '../../assets/spells.json'
-
-import * as interfaces from './player_collection'
-
-import * as table from './../character-sheet-screen/spell-table'
-
+import { take } from 'rxjs/operators';
 import { SaveConfig } from './save_config'
 import { EventsService } from '../events.service';
+
+import loadedSpells from '../../assets/spells.json'
+import * as interfaces from './player_collection'
+import * as table from './../character-sheet-screen/spell-table'
+
+
 
 @Component({
   selector: 'page-home',
@@ -25,19 +22,13 @@ import { EventsService } from '../events.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
   user: FirebaseUserModel = new FirebaseUserModel();
   profileForm: FormGroup;
-
-  screenID = 0;
-
-
-
+  characterRelevantSpells;
+  wizardTable;
   private AllSpells: Array<Array<interfaces.Spell>>;
 
-  characterRelevantSpells;
-
-  wizardTable;
+  screenID = 0;
 
   constructor(
     public userService: UserService,
@@ -48,10 +39,7 @@ export class HomeComponent implements OnInit {
     private db: AngularFirestore,
     private events: EventsService
   ) {
-    console.debug("home constructor called")
-
     this.wizardTable = table.table;
-
   }
 
   ngOnInit(): void {
@@ -59,104 +47,80 @@ export class HomeComponent implements OnInit {
       let data = routeData['data'];
       if (data) {
         this.user = data;
-        // this.makeNav(this.user.name);
       }
     })
 
-    this.getDataForUser();
-
-
-
-
+    this.getAvailableCharactersForUser();
 
   }
 
   initialiseSpellSlots() {
-
+    /// TODO
   }
 
   loadKnownSpells: boolean = true;
 
-  //database-call go brrr
-  getDataForUser() {
-    //gets userID from auth
+  characterHasBeenChosen() {
+
+    console.debug("recieved results:")
+    console.debug(this.events.PlayerCollection);
+
+    this.AllSpells = new Array<Array<interfaces.Spell>>();
+    for (let index = 0; index <= 9; index++) {
+      var temp = new Array<interfaces.Spell>();
+      this.AllSpells.push(temp)
+    }
+
+    if (this.loadKnownSpells) {
+      for (let key in this.events.PlayerCollection.spellbook) {
+        var convertedKey = key === "cantrips" ? 0 : +key;
+        var spells = this.events.PlayerCollection.spellbook[key];
+        spells.forEach(spell => {
+          console.log(convertedKey);
+          this.AllSpells[convertedKey].push(spell);
+        });
+      }
+
+    } else {
+      // initialise list with list containing 9 empty list
+      loadedSpells.forEach(spell => {
+        var obj = spell as interfaces.Spell;
+        var level = obj.level === "cantrip" ? 0 : (+obj.level);
+        var spellNames = []
+        if ((obj["classes"].some(this.isWizardClass) && level <= this.getMaxAvailableSpellLevel(this.events.PlayerCollection.level)) || spellNames.includes(obj.name.toLowerCase())) {
+          if (!this.AllSpells[level]) {
+            this.AllSpells[level] = new Array<interfaces.Spell>(spell)
+          } else {
+            this.AllSpells[level].push(spell);
+          }
+        }
+      })
+
+    }
+
+    console.debug(this.AllSpells);
+
+    this.screenID = 1;
+  }
+
+  getAvailableCharactersForUser() {
     var idTokenResult = this.authService.angularFireAuth.idTokenResult.pipe(
       take(1)
     )
 
-    //uses userID to fetch player
+    // uses userID to fetch player
     idTokenResult.subscribe(idToken => {
       if (idToken) {
         var user_id = idToken.claims.user_id;
-        var responseFromDatabase = this.db.collection(
-          "player_collection").doc(user_id).valueChanges();
+        var responseFromDatabase = this.db.collection("player_collection").doc(user_id).collection("character_collection").valueChanges();
 
-        responseFromDatabase.subscribe((result: interfaces.PlayerCollection) => {
-          if (result) {
-            //player was found
-            this.events.PlayerCollection = result;
-            // this.resultFromDatabase = result;
-            console.debug("recieved results:")
-            console.debug(this.events.PlayerCollection);
-
-            this.AllSpells = new Array<Array<interfaces.Spell>>();
-            for (let index = 0; index <= 9; index++) {
-              var temp = new Array<interfaces.Spell>();
-              this.AllSpells.push(temp)
-            }
-
-            if (this.loadKnownSpells) {
-
-              for (let key in result.spellbook) {
-                var convertedKey = key === "cantrips" ? 0 : +key;
-                var spells = result.spellbook[key];
-                spells.forEach(spell => {
-                  console.log(convertedKey);
-                  this.AllSpells[convertedKey].push(spell);
-                });
-
-                // Use `key` and `value`
-              }
-
-            } else {
-              // initialise list with list containing 9 empty list
-
-
-              var index = 0;
-              spells.forEach((spell) => {
-                var obj = spell as interfaces.Spell;
-                var level = obj.level === "cantrip" ? 0 : (+obj.level);
-
-                if (obj["classes"].some(this.isWizardClass) && level <= this.getMaxAvailableSpellLevel(result.level)) {
-                  if (!this.AllSpells[level]) {
-                    this.AllSpells[level] = new Array<interfaces.Spell>(spell)
-                  } else {
-                    this.AllSpells[level].push(spell);
-                  }
-
-                  //iterate over saved spells, and only 
-                }
-                index++
-              })
-
-            }
-
-
-
-            console.debug(this.AllSpells);
-
-
-
-          } else {
-            //player was not found -> create new player
-            console.debug("creating new character sheet")
-          }
-          this.initialiseSpellSlots();
-        })
+        responseFromDatabase.subscribe((result: interfaces.PlayerCollection[]) => {
+          this.events.AvailableCharacters = result;
+        });
       }
-
     })
   }
+
 
   getMaxAvailableSpellLevel(level: number) {
     var highestlvl = 0;
@@ -179,12 +143,6 @@ export class HomeComponent implements OnInit {
       }, err => console.log(err))
   }
 
-  // makeNav(name) {
-  //   this.profileForm = this.fb.group({
-  //     name: [name, Validators.required]
-  //   });
-  // }
-
   SwitchScreen(event: number) {
     this.screenID = event
   }
@@ -198,7 +156,7 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  saveSpell(spellToSave: interfaces.Spell) {
+  saveSpell(event) {
     //refetch user id
     var idTokenResult = this.authService.angularFireAuth.idTokenResult.pipe(
       take(1)
@@ -207,16 +165,18 @@ export class HomeComponent implements OnInit {
     idTokenResult.subscribe(idToken => {
       if (idToken) {
         var user_id = idToken.claims.user_id;
-        this.getDocument(user_id).then((result: interfaces.PlayerCollection) => {
+        this.getDocument(user_id + '/character_collection/' + event.playerCollection).then((result: interfaces.PlayerCollection) => {
           console.debug(result);
-          const levelIndex: string = spellToSave.level === "cantrip" ? "cantrips" : spellToSave.level
-          if (this.isUnique(spellToSave.name, result.spellbook[levelIndex].map((elm) => {
+          const levelIndex: string = event.spell.level === "cantrip" ? "cantrips" : event.spell.level
+          if (this.isUnique(event.spell.name, levelIndex in result.spellbook ? result.spellbook[levelIndex]?.map((elm) => {
             return elm.name
-          }))) {
+          }) : undefined)) {
             console.log("unique");
-            result.spellbook[levelIndex].push(spellToSave);
-            this.db.collection("player_collection").doc(user_id).set({ spellbook: result.spellbook }, { merge: true })
-
+            if (!(levelIndex in result.spellbook)) {
+              result.spellbook[levelIndex] = []
+            }
+            result.spellbook[levelIndex].push(event.spell);
+            this.db.collection("player_collection").doc(user_id).collection("character_collection").doc(event.playerCollection).set({ spellbook: result.spellbook }, { merge: true })
           } else {
             console.log("not unique");
           }
@@ -237,26 +197,24 @@ export class HomeComponent implements OnInit {
         console.debug("saving character" + character[key]);
         if (idToken) {
           var user_id = idToken.claims.user_id;
-          this.getDocument(user_id).then((result: interfaces.PlayerCollection) => {
+          this.getDocument(user_id + '/character_collection/' + saveConfig.player.collection).then((result: interfaces.PlayerCollection) => {
             result[key] = character[key];
-            this.variableSave(this.db, user_id, key, result[key]);
-
-
+            this.variableSave(this.db, user_id, key, result[key], saveConfig.player.collection);
           });
         }
       });
     })
   }
 
-  variableSave(db, user_id, key, result) {
+  variableSave(db: AngularFirestore, user_id, key, result, collection: string) {
     switch (key) {
       case "spells_prepared":
         console.log("saving: spells_prepared")
-        db.collection("player_collection").doc(user_id).set({ spells_prepared: result }, { merge: true })
+        db.collection("player_collection").doc(user_id).collection("character_collection").doc(collection).set({ spells_prepared: result }, { merge: true })
         break;
       case "status":
         console.log("saving: status")
-        db.collection("player_collection").doc(user_id).set({ status: result }, { merge: true })
+        db.collection("player_collection").doc(user_id).collection("character_collection").doc(collection).set({ status: result }, { merge: true })
         break;
 
       default:
@@ -264,24 +222,12 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  saveCharacter(characterToSave: interfaces.PlayerCollection) {
-    var idTokenResult = this.authService.angularFireAuth.idTokenResult.pipe(
-      take(1)
-    );
-
-    idTokenResult.subscribe(idToken => {
-      console.debug("saving character" + characterToSave.status);
-      if (idToken) {
-        var user_id = idToken.claims.user_id;
-        this.getDocument(user_id).then((result: interfaces.PlayerCollection) => {
-          result.status = characterToSave.status;
-          this.db.collection("player_collection").doc(user_id).set({ status: result.status }, { merge: true })
-        });
-      }
-    })
-  }
 
   isUnique(elementRef, arrayRef) {
+    // if database-map isn't intialised it must be unique
+    if (!arrayRef) {
+      return true;
+    }
     var unique = true;
     arrayRef.forEach(element => {
       if (element === elementRef) {
@@ -299,11 +245,11 @@ export class HomeComponent implements OnInit {
   }
 
   longRest() {
-
+    ///TODO
   }
 
   shortRest() {
-
+    ///TODO
   }
 
 }
