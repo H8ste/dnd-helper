@@ -1,0 +1,165 @@
+<h2>Create Spell</h2>
+<mat-dialog-content [formGroup]="form">
+    <!-- <mat-form-field>
+      <input matInput type="checkbox" formControlName="material">
+  </mat-form-field> -->
+    <div id="container">
+
+
+
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" type="text" placeholder="Eldritch Blast"><br>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Level</mat-label>
+            <input matInput formControlName="level" type="text" placeholder="3"><br>
+        </mat-form-field>
+        <div id="components">
+            <div>
+                <mat-label>Verbal</mat-label>
+                <mat-checkbox formControlName="verbal"></mat-checkbox>
+            </div>
+            <div>
+                <mat-label>Somatic</mat-label>
+                <mat-checkbox formControlName="somatic"></mat-checkbox>
+            </div>
+            <div>
+                <mat-label>Material</mat-label>
+                <mat-checkbox formControlName="material"></mat-checkbox>
+            </div>
+        </div>
+
+        <mat-form-field *ngIf="this.createdSpell.components.material">
+            <mat-label>Materials needed</mat-label>
+            <input matInput formControlName="materials_needed" type="text"
+                placeholder="material one, material two, ...">
+        </mat-form-field>
+
+
+
+        <mat-form-field>
+            <mat-label>Raw</mat-label>
+            <input matInput formControlName="raw" type="text" placeholder="V,S,M (.....)">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Duration</mat-label>
+            <input matInput formControlName="duration" type="text" placeholder="1 Hour">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Casting Time</mat-label>
+            <input matInput formControlName="casting_time" type="text" placeholder="1 Action">
+        </mat-form-field>
+
+
+        <mat-form-field>
+            <mat-label>Range</mat-label>
+            <input matInput formControlName="range" type="text" placeholder="30 feet">
+        </mat-form-field>
+
+        <mat-label>Ritual</mat-label>
+        <mat-checkbox formControlName="ritual">
+        </mat-checkbox>
+
+        <mat-form-field>
+            <mat-label>School</mat-label>
+            <input matInput formControlName="school" type="text" placeholder="Onomancy, ...">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description" type="text" placeholder="When you cast this spell....">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Higher_levels</mat-label>
+            <input matInput formControlName="higher_levels" type="text" placeholder="When you cast this spell using...">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Classes</mat-label>
+            <input matInput formControlName="classes" type="text" placeholder="class one, class two, ...">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Tags</mat-label>
+            <input matInput formControlName="tags" type="text" placeholder="cleric,paladin,level1,...">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Type</mat-label>
+            <input matInput formControlName="type" type="text" placeholder="1st-level enchantment"><br>
+        </mat-form-field>
+
+
+
+        <!-- <mat-form-field>
+        <mat-label>Material</mat-label>
+        <mat-checkbox matInput>
+        </mat-checkbox>
+    </mat-form-field> -->
+        <!-- <mat-label>Casting Time</mat-label>
+    <input formControlName="casting_time" type="text" matInput placeholder="1 Action"> <br>
+
+ 
+    <mat-label>Verbal</mat-label>
+    <mat-form-field >
+        <mat-checkbox matInput formControlName="verbal">
+         </mat-checkbox>
+    </mat-form-field>
+
+    <mat-label>Somatic</mat-label>
+    <mat-form-field >
+        <mat-checkbox matInput formControlName="somatic">
+         </mat-checkbox>
+    </mat-form-field>
+
+    <mat-label>Material</mat-label>
+    <mat-form-field >
+        <mat-checkbox matInput formControlName="material">
+         </mat-checkbox>
+    </mat-form-field>
+   
+    <mat-label *ngIf="createdSpell.components.material === true">Materials needed</mat-label>
+    <mat-form-field >
+        <input *ngIf="createdSpell.components.material === true" formControlName="materials_needed" type="text" matInput
+        placeholder="material one, material two, ...">
+    </mat-form-field>
+   <br>
+
+    <mat-label>Raw</mat-label>
+    <input formControlName="raw" type="text" matInput placeholder="V,S,M (.....)"><br>
+
+  
+    <mat-label>Duration</mat-label>
+    <input formControlName="duration" type="text" matInput placeholder="1 Hour"><br>
+
+
+
+
+    <mat-label>Name</mat-label>
+    <input formControlName="name" type="text" matInput placeholder="Eldritch Blast"><br>
+
+    <mat-label>Range</mat-label>
+    <input formControlName="range" type="text" matInput placeholder="30 feet"><br>
+
+    <mat-label>Ritual</mat-label>
+    <mat-form-field >
+        <mat-checkbox matInput formControlName="ritual">
+         </mat-checkbox>
+    </mat-form-field>
+
+    
+   
+   -->
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button (click)="save()">Save</button>
+
+    <button mat-button (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

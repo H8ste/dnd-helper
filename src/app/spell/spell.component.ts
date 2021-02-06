@@ -15,6 +15,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 export class SpellComponent implements OnInit {
   @Input() spellInput: interfaces.Spell;
   @Input() alreadyPrepared: boolean;
+  @Input() showingPrepared: boolean;
   @Output() spellSave = new EventEmitter<interfaces.Spell>();
   @Output() prepareSpell = new EventEmitter<interfaces.Spell>();
 

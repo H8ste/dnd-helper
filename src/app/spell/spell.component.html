@@ -1,5 +1,6 @@
 <div id="container">
-    <div class="indicator">
+    <div class="indicator"[ngClass]="{'hidden': showingPrepared, 'visible': !showingPrepared
+    }">
         <fa-icon [icon]="selectedIcon" *ngIf="alreadyPrepared">
         </fa-icon>
     </div>

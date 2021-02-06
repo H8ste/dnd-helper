@@ -20,6 +20,7 @@ import { DialogHitpointsComponent } from '../dialog-hitpoints/dialog-hitpoints.c
 
 import { AsModifierPipe } from './../ability-modifier/ability-modifer.pipe'
 import { EventsService } from '../events.service';
+import { CreateSpellComponent } from '../create-spell/create-spell.component';
 
 @Component({
   selector: 'character-sheet-screen',
@@ -35,7 +36,7 @@ export class CharacterSheetScreenComponent implements OnInit {
   @Input() SpellsPrepared: string[]
   // @Input() PlayerSpellSlots
   @Output() OnSwitchScreen = new EventEmitter<number>();
-  @Output() spellSave = new EventEmitter<{spell:interfaces.Spell, playerCollection: string}>();
+  @Output() spellSave = new EventEmitter<{ spell: interfaces.Spell, playerCollection: string }>();
   @Output() PlayerCollectionSave = new EventEmitter<SaveConfig>();
 
 
@@ -55,6 +56,7 @@ export class CharacterSheetScreenComponent implements OnInit {
     breakpointObserver: BreakpointObserver,
     private db: AngularFirestore,
     public hitpointsDialog: MatDialog,
+    public createSpellDialogRef: MatDialog,
     private asModifierPipe: AsModifierPipe,
     public events: EventsService) {
     this.wizardTable = table.table;
@@ -131,7 +133,7 @@ export class CharacterSheetScreenComponent implements OnInit {
   }
 
   saveSpell(spellToSave: interfaces.Spell) {
-    this.spellSave.emit({spell: spellToSave, playerCollection: this.events.PlayerCollection.collection});
+    this.spellSave.emit({ spell: spellToSave, playerCollection: this.events.PlayerCollection.collection });
   }
 
   heartClicked() {
@@ -159,6 +161,23 @@ export class CharacterSheetScreenComponent implements OnInit {
     // this.hitpointsDialog.afterAllClosed.
   }
 
+  CreateNewSpell() {
+    console.log("creating new spell")
+    const dialogConfig = new MatDialogConfig();
+    // dialogConfig.data = {
+    //   current_hitpoints: this.events.PlayerCollection.status.current_hitpoints,
+    //   max_hitpoints: this.events.PlayerCollection.status.max_hitpoints,
+    //   temp_hitpoints: this.events.PlayerCollection.status.temp_hitpoints,
+    // }
+    let createSpellDialogRef = this.createSpellDialogRef.open(CreateSpellComponent, dialogConfig)
+    createSpellDialogRef.afterClosed().subscribe((newSpell) => {
+      // console.log(newSpell);
+      if (newSpell){
+        this.saveSpell(newSpell);
+      }
+    })
+  }
+
   prepareSpell(spell: interfaces.Spell) {
     if (spell) {
       //check if player already has too many spells prepared
@@ -166,8 +185,8 @@ export class CharacterSheetScreenComponent implements OnInit {
 
       if (this.events.PlayerCollection.spells_always_prepared.some((alwaysPreparedSpellName) => {
         return alwaysPreparedSpellName === spell.name
-      })){
-        
+      })) {
+
       } else {
         //check if player doesn't already has this spell prepared
         if (this.events.PlayerCollection.spells_prepared.some((spellPreparedName) => {
@@ -192,7 +211,7 @@ export class CharacterSheetScreenComponent implements OnInit {
 
         this.PlayerCollectionSave.emit({ player: this.events.PlayerCollection, keyOfField: ["spells_prepared"] })
       }
-      
+
 
     }
 

@@ -38,14 +38,17 @@ import { DialogHitpointsComponent } from './dialog-hitpoints/dialog-hitpoints.co
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { CharacterSelectorScreenComponent } from './character-selector-screen/character-selector-screen.component'
+import { MatInputModule } from '@angular/material/input';
+import { CharacterSelectorScreenComponent } from './character-selector-screen/character-selector-screen.component';
+import { CreateSpellComponent } from './create-spell/create-spell.component'
 
 
 var firebaseConfig = {
@@ -77,8 +80,9 @@ var firebaseConfig = {
     SpellComponent,
     DialogHitpointsComponent,
     CharacterSelectorScreenComponent,
+    CreateSpellComponent,
   ],
-  entryComponents: [DialogHitpointsComponent],
+  entryComponents: [DialogHitpointsComponent, CreateSpellComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -92,10 +96,12 @@ var firebaseConfig = {
     MatIconModule,
     FontAwesomeModule,
     MatTabsModule,
+    MatInputModule,
     MatDialogModule,
     MatFormFieldModule,
     MatButtonToggleModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatSlideToggleModule,
   ],
   providers: [AuthenticationService, UserService, UserResolver, HomeResolver, AuthGuard, AsModifierPipe],

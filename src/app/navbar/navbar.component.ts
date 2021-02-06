@@ -32,4 +32,8 @@ export class NavbarComponent implements OnInit {
   longRest() {
     this.eventservice.longRest();
   }
+
+  addNewSpell() {
+    this.eventservice.addNewSpell();
+  }
 }

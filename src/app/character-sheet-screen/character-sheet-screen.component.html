@@ -232,6 +232,7 @@
                         <mat-slide-toggle [(ngModel)]="onlyShowPrepared">Only Show Prepared Spells</mat-slide-toggle>
                         <span>{{events.PlayerCollection.spells_prepared.length}} /
                             {{events.PlayerCollection.level + (events.PlayerCollection.ability_scores.int | asModifier)}}</span>
+                            <button mat-button (click)="CreateNewSpell()">+ new spell</button>
                     </div>
                     <div id="SpellList">
                         <div *ngFor="let spellLevel of AvailableSpells; let i = index">
@@ -240,7 +241,7 @@
                                     <spell *ngIf="!onlyShowPrepared || onlyShowPrepared && alreadyPrepared(spell)"
                                         [spellInput]="spell" (spellSave)="saveSpell($event)"
                                         (prepareSpell)="prepareSpell($event)"
-                                        [alreadyPrepared]="alreadyPrepared(spell)">
+                                        [alreadyPrepared]="alreadyPrepared(spell)" [showingPrepared]="onlyShowPrepared">
                                     </spell>
                                 </div>
                             </div>

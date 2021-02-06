@@ -17,3 +17,11 @@
     flex-basis: 10%;
 
 }
+
+.visible {
+    visibility: visible;
+}   
+
+.hidden {
+    visibility: hidden;
+}

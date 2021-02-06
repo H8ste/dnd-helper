@@ -33,6 +33,10 @@ export class EventsService {
     this.savePlayerCollection({ player: this.PlayerCollection, keyOfField: ["status"] });
   }
 
+  addNewSpell() {
+    
+  }
+
   savePlayerCollection(saveConfig: SaveConfig) {
     var idTokenResult = this.authService.angularFireAuth.idTokenResult.pipe(
       take(1)
