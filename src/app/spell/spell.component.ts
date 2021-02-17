@@ -6,6 +6,7 @@ import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { EventsService } from '../events.service';
 
 @Component({
   selector: 'spell',
@@ -19,7 +20,7 @@ export class SpellComponent implements OnInit {
   @Output() spellSave = new EventEmitter<interfaces.Spell>();
   @Output() prepareSpell = new EventEmitter<interfaces.Spell>();
 
-  constructor() { }
+  constructor(private events: EventsService) { }
 
   farCircle = farCircle;
   fasCircle = fasCircle;
@@ -31,7 +32,8 @@ export class SpellComponent implements OnInit {
   }
 
   saveSpell(spellToSave: interfaces.Spell) {
-    // this.spellSave.emit(spellToSave);
+    if (this.events.loadAllSpells)
+      this.spellSave.emit(spellToSave);
   }
 
   doubleClick(spellToPrepare: interfaces.Spell) {

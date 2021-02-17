@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
 
   screenID = 0;
 
+  private eventService = null;
   constructor(
     public userService: UserService,
     public authService: AuthenticationService,
@@ -40,6 +41,7 @@ export class HomeComponent implements OnInit {
     private events: EventsService
   ) {
     this.wizardTable = table.table;
+    this.events.loadAllSpellsChange.subscribe((value) => this.loadSpells())
   }
 
   ngOnInit(): void {
@@ -54,16 +56,33 @@ export class HomeComponent implements OnInit {
 
   }
 
+  get loadAllSpells(): boolean {
+    console.log("loadAllSpells Changed");
+    return this.events.loadAllSpells;
+  }
+
+
+
   initialiseSpellSlots() {
     /// TODO
   }
 
-  loadKnownSpells: boolean = true;
+  loadKnownSpells;
 
   characterHasBeenChosen() {
 
     console.debug("recieved results:")
     console.debug(this.events.PlayerCollection);
+
+
+    this.loadSpells();
+
+    console.debug(this.AllSpells);
+
+    this.screenID = 1;
+  }
+
+  loadSpells() {
 
     this.AllSpells = new Array<Array<interfaces.Spell>>();
     for (let index = 0; index <= 9; index++) {
@@ -71,12 +90,11 @@ export class HomeComponent implements OnInit {
       this.AllSpells.push(temp)
     }
 
-    if (this.loadKnownSpells) {
+    if (!this.events.loadAllSpells) {
       for (let key in this.events.PlayerCollection.spellbook) {
         var convertedKey = key === "cantrips" ? 0 : +key;
         var spells = this.events.PlayerCollection.spellbook[key];
         spells.forEach(spell => {
-          console.log(convertedKey);
           this.AllSpells[convertedKey].push(spell);
         });
       }
@@ -95,12 +113,7 @@ export class HomeComponent implements OnInit {
           }
         }
       })
-
     }
-
-    console.debug(this.AllSpells);
-
-    this.screenID = 1;
   }
 
   getAvailableCharactersForUser() {
@@ -157,7 +170,6 @@ export class HomeComponent implements OnInit {
   }
 
   saveSpell(event) {
-    //refetch user id
     var idTokenResult = this.authService.angularFireAuth.idTokenResult.pipe(
       take(1)
     );

@@ -75,6 +75,8 @@ interface RacialFeature {
 interface SpellBook {
     cantrips: Spell[],
     "1": Spell[],
+    "2": Spell[],
+    "3": Spell[],
 }
 
 interface Spell {

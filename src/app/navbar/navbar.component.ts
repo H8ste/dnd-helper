@@ -11,14 +11,32 @@ export class NavbarComponent implements OnInit {
   @Input() user: FirebaseUserModel;
   @Output() OnLogOut = new EventEmitter<boolean>();
   showNavbar = false;
-  constructor(private eventservice: EventsService) { }
+  loadAllSpells: boolean;
+  constructor(private eventservice: EventsService) {
+    this.loadAllSpells = eventservice.loadAllSpells;
+  }
+
+
 
   ngOnInit(): void {
   }
 
 
+
+  toggleLoadAllSpells() {
+    this.eventservice.toggleLoadAllSpells();
+  }
+
+  playerHasBeenChosen() {
+    return this.eventservice.PlayerCollection
+  }
+
   toggleNavbar() {
     this.showNavbar = !this.showNavbar;
+  }
+
+  getAmountOfSpells() {
+    return Object.values(this.eventservice.PlayerCollection.spellbook).map(level => level !== this.eventservice.PlayerCollection.spellbook.cantrips ? level.length : 0).reduce((a, b) => a + b, 0)
   }
 
   logout() {

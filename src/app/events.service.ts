@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { AuthenticationService } from './core/authentication.service';
 import * as interfaces from './home/player_collection'
@@ -10,7 +11,15 @@ import { SaveConfig } from './home/save_config';
 })
 export class EventsService {
 
-  constructor(public authService: AuthenticationService, private db: AngularFirestore,) { }
+  constructor(public authService: AuthenticationService, private db: AngularFirestore,) {
+    this.loadAllSpellsChange.subscribe((value => {
+      this.loadAllSpells = value;
+    }))
+  }
+
+  toggleLoadAllSpells() {
+    this.loadAllSpellsChange.next(!this.loadAllSpells);
+  }
 
   spellSlotsUsed = [0, 0, 0, 0, 0, 0, 0, 0, 0]
   scholarPointsUsed = 0;
@@ -18,6 +27,8 @@ export class EventsService {
   PlayerCollection: interfaces.PlayerCollection;
 
   AvailableCharacters: interfaces.PlayerCollection[];
+  loadAllSpells = false;
+  loadAllSpellsChange: Subject<boolean> = new Subject<boolean>();
 
   shortRest() {
     // this.scholarPointsUsed = 0;
@@ -34,7 +45,7 @@ export class EventsService {
   }
 
   addNewSpell() {
-    
+
   }
 
   savePlayerCollection(saveConfig: SaveConfig) {
@@ -61,6 +72,10 @@ export class EventsService {
   async getDocument(docId: string) {
     let document = await this.db.collection("player_collection").doc(docId).get().toPromise();
     return document.data();
+  }
+
+  LoadAllSpells() {
+    // return this.loadKnownSpells;
   }
 
   variableSave(db, user_id, key, result) {

@@ -133,7 +133,13 @@ export class CharacterSheetScreenComponent implements OnInit {
   }
 
   saveSpell(spellToSave: interfaces.Spell) {
-    this.spellSave.emit({ spell: spellToSave, playerCollection: this.events.PlayerCollection.collection });
+    var toSave = Object.values(this.events.PlayerCollection.spellbook).filter((spellArr: interfaces.Spell[]) => {
+      return spellArr.filter((spell: interfaces.Spell) => spell.name === spellToSave.name).length > 0;
+    });
+    if (toSave.length == 0) {
+      this.spellSave.emit({ spell: spellToSave, playerCollection: this.events.PlayerCollection.collection });
+    }
+
   }
 
   heartClicked() {
@@ -172,7 +178,7 @@ export class CharacterSheetScreenComponent implements OnInit {
     let createSpellDialogRef = this.createSpellDialogRef.open(CreateSpellComponent, dialogConfig)
     createSpellDialogRef.afterClosed().subscribe((newSpell) => {
       // console.log(newSpell);
-      if (newSpell){
+      if (newSpell) {
         this.saveSpell(newSpell);
       }
     })
